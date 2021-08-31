@@ -22,13 +22,13 @@ $json = @{
     "bind_password" = "password"
 } | ConvertTo-Json -Compress -Depth 10
 $body = [System.Text.Encoding]::UTF8.GetBytes($json)
-$response = invoke-restmethod -Uri "http://localhost:8080/v1/sessions" -Method Post  -ContentType 'application/json'-Body $body
+$response = invoke-restmethod -Uri "http://localhost:8080/v1/sessions" -Method Post -ContentType 'application/json'-Body $body
 $session_id = $response.session_id
 
 # エントリの検索
 $headers = @{ "SESSION-ID" = $session_id }
 $queryParameter = "?scope=subtree&filter=" + [System.Web.HttpUtility]::UrlEncode("(&(cn=10001)(objectClass=inetOrgPerson))")
-$response = invoke-restmethod -Uri "http://localhost:8080/v1/ldap/ou=people,dc=maybework,dc=local$queryParameter" -Method Get  -ContentType 'application/json' -Headers $headers
+$response = invoke-restmethod -Uri "http://localhost:8080/v1/ldap/ou=people,dc=maybework,dc=local$queryParameter" -Method Get -ContentType 'application/json' -Headers $headers
 $response
 
 # ログアウト
