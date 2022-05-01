@@ -10,7 +10,6 @@ LDAP Server 操作用の<b>「実験的」</b>な REST Server。
 1. [Windows サービス](/Windowsサービス.md) 
 1. [実行方法](/実行方法.md) 
 1. [REST API](https://aoyanagi.github.io/Restful-LDAP-Manager-Release/rest-api.html)
-1. [変更履歴](/変更履歴.md)
 
 # 呼び出し方法
 
