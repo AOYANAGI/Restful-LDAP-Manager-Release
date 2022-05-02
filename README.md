@@ -10,6 +10,7 @@ LDAP Server 操作用の<b>「実験的」</b>な REST Server。
 1. [Windows サービス](/Windowsサービス.md) 
 1. [実行方法](/実行方法.md) 
 1. [REST API](https://aoyanagi.github.io/Restful-LDAP-Manager-Release/rest-api.html)
+1. [変更履歴](/変更履歴.md) 
 
 # 呼び出し方法
 
@@ -49,4 +50,52 @@ userpassword : {SHA512}sQnzu7wkTrgkQZF+0G1hi5AI3Qmzvv0bXgc5THBqi7mAsdd4Xll27ASbR
 cn           : 10001
 sn           : yamada
 title        : Manager
+```
+
+# マッピングによる LDAP Server の更新
+設定ファイルに記述されたマッピングを評価して LDAP Server のエントリを登録・更新する。
+リクエストの属性値をそのままエントリに設定する、または PowerShell の実行結果をエントリに設定する２パターン。
+- エントリの登録時に REST API のリクエスト cn を LDAP Server のエントリ cn にそのまま設定を行う。
+- エントリの登録・更新時に REST API のリクエスト sn と givenName の間にスペースを挿入して LDAP Server のエントリ displayName に設定を行う。
+- エントリの登録・更新時に LDAP Server のエントリ description に現在日時の設定を行う。
+- PowerShell は複数行の記述が可能
+
+ServerConfig.xml
+```XML
+    <!-- マッピング一覧 -->
+    <mapping_list>
+        <mapping add="true" mod="false">
+            <!-- リクエストの属性値をそのまま設定する場合は false、PowerShell による加工の場合は true を設定する。-->
+            <formula>false</formula>
+
+            <!-- リクエストの属性名または式 -->
+            <source>cn</source>
+
+            <!-- LDAP サーバーに設定する属性名 -->
+            <target>cn</target>
+        </mapping>
+
+        <mapping add="true" mod="true">
+            <!-- リクエストの属性値をそのまま設定する場合は false、PowerShell による加工の場合は true を設定する。-->
+            <formula>true</formula>
+
+            <!-- リクエストの属性名または式 -->
+            <source>$sn + ' ' + $givenName</source>
+
+            <!-- LDAP サーバーに設定する属性名 -->
+            <target>displayName</target>
+        </mapping>
+        
+        <mapping add="true" mod="true">
+            <!-- リクエストの属性値をそのまま設定する場合は false、PowerShell による加工の場合は true を設定する。-->
+            <formula>true</formula>
+
+            <!-- リクエストの属性名または式 -->
+            <source>(Get-Date).ToString('yyyy-MM-dd hh:mm:ss')</source>
+
+            <!-- LDAP サーバーに設定する属性名 -->
+            <target>description</target>
+        </mapping>
+    </mapping_list>
+</config>
 ```
